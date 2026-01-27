@@ -17,24 +17,21 @@
         /* Адаптивная шапка */
         .cover { 
             width: 100%; 
-            height: 60vh; /* На мобильных чуть короче */
+            height: 60vh; 
             object-fit: cover; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
         }
         @media (min-width: 768px) {
-            .cover { height: 90vh; } /* На компах высокая */
+            .cover { height: 90vh; } 
         }
 
         h1 { font-size: 2rem; margin: 30px 0; letter-spacing: 5px; color: #000; text-shadow: 0 0 15px white; }
 
-        /* Сетка галереи */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
 
-        /* Фото дня — всегда крупное */
         .photo-day-section { margin-bottom: 50px; }
         .photo-day-card { width: 100%; max-width: 800px; margin: 0 auto; }
-        
-        /* Сетка для остальных фото: 2 в ряд на компах, 1 на мобилках */
+             
         .grid { 
             display: flex; 
             flex-wrap: wrap; 
@@ -42,17 +39,16 @@
             justify-content: center; 
         }
         .photo-card { 
-            flex: 1 1 100%; /* 1 колонка по умолчанию */
+            flex: 1 1 100%; 
             max-width: 500px; 
         }
         @media (min-width: 768px) {
-            .photo-card { flex: 1 1 calc(45% - 20px); } /* 2 колонки на ПК */
+            .photo-card { flex: 1 1 calc(45% - 20px); } 
         }
 
-        /* Стили изображений */
         .gallery-item { 
             width: 100%; 
-            height: 350px; /* Фиксированная высота для красоты сетки */
+            height: 350px; 
             object-fit: cover; 
             border-radius: 15px; 
             border: 4px solid white; 
@@ -85,13 +81,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luminous-lightbox/2.3.2/Luminous.min.js"></script>
     <script>
-        // СПИСОК ФОТО (кроме day.jpg)
-        const myPhotos = ["ALAN.jpg"]; 
+        const myPhotos = ["ALAN.JPG"]; 
 
         const dayContainer = document.getElementById('photo-day');
         const gridContainer = document.getElementById('grid');
 
-        // 1. Ставим фото дня
         const dayImg = "day.jpg";
         const dayPath = `static/photos/${dayImg}`;
         dayContainer.innerHTML = `
@@ -101,7 +95,6 @@
             </div>
         `;
 
-        // 2. Ставим остальные фото в сетку
         myPhotos.forEach(file => {
             const path = `static/photos/${file}`;
             gridContainer.innerHTML += `
