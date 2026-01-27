@@ -6,73 +6,113 @@
     <title>Моя Галерея</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/luminous-lightbox/2.3.2/luminous-basic.min.css">
     <style>
+        /* Основные настройки */
         body { 
             font-family: -apple-system, sans-serif; margin: 0; text-align: center;
-            /* Фон сайта берется из папки static/photos/ */
             background-image: url("static/photos/background.jpg");
             background-attachment: fixed; background-size: cover; background-position: center;
             background-color: #f0f0f0; 
         }
-        .cover { width: 100%; height: 90vh; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        h1 { font-size: 3rem; margin: 60px 0; letter-spacing: 12px; color: #000; text-shadow: 0 0 20px white; text-transform: uppercase; }
-        
-        .gallery { display: flex; flex-direction: column; align-items: center; gap: 50px; padding-bottom: 100px; }
-        
-        .photo-card { width: 92%; max-width: 800px; }
-        .gallery-item { 
-            width: 100%; height: 600px; object-fit: cover; 
-            border-radius: 20px; border: 6px solid white; background: white;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.2); transition: 0.3s;
+
+        /* Адаптивная шапка */
+        .cover { 
+            width: 100%; 
+            height: 60vh; /* На мобильных чуть короче */
+            object-fit: cover; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); 
         }
-        .gallery-item:hover { transform: scale(1.01); }
+        @media (min-width: 768px) {
+            .cover { height: 90vh; } /* На компах высокая */
+        }
+
+        h1 { font-size: 2rem; margin: 30px 0; letter-spacing: 5px; color: #000; text-shadow: 0 0 15px white; }
+
+        /* Сетка галереи */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+
+        /* Фото дня — всегда крупное */
+        .photo-day-section { margin-bottom: 50px; }
+        .photo-day-card { width: 100%; max-width: 800px; margin: 0 auto; }
+        
+        /* Сетка для остальных фото: 2 в ряд на компах, 1 на мобилках */
+        .grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+            justify-content: center; 
+        }
+        .photo-card { 
+            flex: 1 1 100%; /* 1 колонка по умолчанию */
+            max-width: 500px; 
+        }
+        @media (min-width: 768px) {
+            .photo-card { flex: 1 1 calc(45% - 20px); } /* 2 колонки на ПК */
+        }
+
+        /* Стили изображений */
+        .gallery-item { 
+            width: 100%; 
+            height: 350px; /* Фиксированная высота для красоты сетки */
+            object-fit: cover; 
+            border-radius: 15px; 
+            border: 4px solid white; 
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .photo-day-card .gallery-item { height: 500px; border-width: 6px; }
 
         .download-btn {
-            display: inline-block; margin-top: 15px; padding: 12px 25px;
-            background: rgba(255,255,255,0.9); color: #333; text-decoration: none;
-            border-radius: 30px; font-weight: bold; font-size: 14px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s;
+            display: inline-block; margin: 10px 0 30px; padding: 10px 20px;
+            background: #fff; color: #333; text-decoration: none;
+            border-radius: 20px; font-weight: bold; font-size: 13px;
         }
-        .download-btn:hover { background: #fff; box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-    <img src="static/photos/cover.jpg" class="cover" alt="Cover">
+    <img src="static/photos/cover.jpg" class="cover">
     
-    <h1>Фотографии</h1>
+    <div class="container">
+        <h1>Фото дня</h1>
+        <div id="photo-day" class="photo-day-section">
+            </div>
 
-    <div class="gallery" id="gallery">
-        </div>
+        <h1>Остальные фото</h1>
+        <div id="grid" class="grid">
+            </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luminous-lightbox/2.3.2/Luminous.min.js"></script>
-    
     <script>
-        /***********************************************************
-         * ИНСТРУКЦИЯ: Чтобы добавить фото, просто допиши его имя 
-         * в кавычках в список ниже через запятую.
-         ***********************************************************/
-        const myPhotos = [
-            
-        ]; 
+        // СПИСОК ФОТО (кроме day.jpg)
+        const myPhotos = ["ALAN.jpg"]; 
 
-        const container = document.getElementById('gallery');
+        const dayContainer = document.getElementById('photo-day');
+        const gridContainer = document.getElementById('grid');
 
-        // Генерируем карточки для каждого фото из списка
-        myPhotos.forEach(fileName => {
-            const filePath = `static/photos/${fileName}`;
-            container.innerHTML += `
+        // 1. Ставим фото дня
+        const dayImg = "day.jpg";
+        const dayPath = `static/photos/${dayImg}`;
+        dayContainer.innerHTML = `
+            <div class="photo-day-card">
+                <a class="zoom" href="${dayPath}"><img src="${dayPath}" class="gallery-item"></a>
+                <a href="${dayPath}" download class="download-btn">📥 СКАЧАТЬ ФОТО ДНЯ</a>
+            </div>
+        `;
+
+        // 2. Ставим остальные фото в сетку
+        myPhotos.forEach(file => {
+            const path = `static/photos/${file}`;
+            gridContainer.innerHTML += `
                 <div class="photo-card">
-                    <a class="zoom-link" href="${filePath}">
-                        <img src="${filePath}" class="gallery-item" alt="Photo">
-                    </a>
-                    <br>
-                    <a href="${filePath}" download="${fileName}" class="download-btn">📥 СКАЧАТЬ</a>
+                    <a class="zoom" href="${path}"><img src="${path}" class="gallery-item"></a>
+                    <a href="${path}" download class="download-btn">📥 СКАЧАТЬ</a>
                 </div>
             `;
         });
 
-        // Включаем эффект зума при клике
-        new LuminousGallery(document.querySelectorAll(".zoom-link"));
+        new LuminousGallery(document.querySelectorAll(".zoom"));
     </script>
 </body>
 </html>
