@@ -48,6 +48,8 @@
             border-radius: 20px; font-weight: bold; font-size: 13px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+
+        #photo-day-wrapper { display: none; }
     </style>
 </head>
 <body>
@@ -55,8 +57,10 @@
     <img src="static/photos/cover.jpg" class="cover">
     
     <div class="container">
-        <h1>Фото дня</h1>
-        <div id="photo-day" class="photo-day-section"></div>
+        <div id="photo-day-wrapper">
+            <h1>Фото дня</h1>
+            <div id="photo-day" class="photo-day-section"></div>
+        </div>
 
         <h1>Галерея</h1>
         <div id="grid" class="grid"></div>
@@ -69,21 +73,26 @@
 
         const dayContainer = document.getElementById('photo-day');
         const gridContainer = document.getElementById('grid');
+        const dayWrapper = document.getElementById('photo-day-wrapper');
 
         const dayPath = `static/photos/day.jpg`;
-        dayContainer.innerHTML = `
-            <div class="photo-day-card">
-                <a class="zoom" href="${dayPath}"><img src="${dayPath}" class="gallery-item"></a>
-                <br><a href="${dayPath}" download class="download-btn">📥 СКАЧАТЬ ФОТО ДНЯ</a>
-            </div>
-        `;
+        const dayImg = new Image();
+        dayImg.onload = function() {
+            dayWrapper.style.display = 'block';
+            dayContainer.innerHTML = `
+                <div class="photo-day-card">
+                    <a class="zoom" href="${dayPath}"><img src="${dayPath}" class="gallery-item"></a>
+                    <br><a href="${dayPath}" download class="download-btn">📥 СКАЧАТЬ ФОТО ДНЯ</a>
+                </div>
+            `;
+        };
+        dayImg.src = dayPath;
 
         myPhotos.forEach(file => {
             const path = `static/photos/${file}`;
             gridContainer.innerHTML += `
                 <div class="photo-card">
-                    <a class="zoom" href="${path}"><img src="${path}" class="gallery-item"></a>
-                    <a href="${path}" download class="download-btn">📥 СКАЧАТЬ</a>
+                    <section class="zoom" href="${path}"><img src="${path}" class="gallery-item"></section>
                 </div>
             `;
         });
