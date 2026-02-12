@@ -26,14 +26,12 @@
             display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; 
         }
         .photo-day-card { width: 100%; max-width: 800px; }
-        .photo-day-card .gallery-item { 
-            height: auto; max-height: 80vh; width: auto; max-width: 100%; 
-            object-fit: contain; border: 6px solid white; border-radius: 15px;
-            background: white; box-shadow: 0 15px 45px rgba(0,0,0,0.2);
-        }
-
+        
         .grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .photo-card { flex: 1 1 100%; max-width: 500px; }
+        .photo-card { 
+            flex: 1 1 100%; max-width: 500px; 
+            display: flex; flex-direction: column; align-items: center; 
+        }
         @media (min-width: 768px) { .photo-card { flex: 1 1 calc(45% - 20px); } }
 
         .gallery-item { 
@@ -41,13 +39,19 @@
             border-radius: 15px; border: 4px solid white; background: white;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: 0.3s;
         }
+       
+        .photo-day-card .gallery-item {
+            height: auto; max-height: 80vh; object-fit: contain;
+        }
 
         .download-btn {
-            display: inline-block; margin: 10px 0 30px; padding: 10px 20px;
+            display: inline-block; margin: 15px 0 30px; padding: 10px 25px;
             background: #fff; color: #333; text-decoration: none;
             border-radius: 20px; font-weight: bold; font-size: 13px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background 0.2s;
         }
+        .download-btn:hover { background: #f0f0f0; }
 
         #photo-day-wrapper { display: none; }
     </style>
@@ -68,7 +72,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luminous-lightbox/2.3.2/Luminous.min.js"></script>
     <script>
-
         const myPhotos = ["1.JPG","2.JPG","3.JPG","4.JPG","5.JPG","6.JPG","7.JPG","8.JPG","9.JPG",
                           "10.JPG","11.JPG","12.JPG","13.JPG","14.JPG","15.JPG","16.JPG","17.JPG","18.JPG",
                           "19.JPG","20.JPG","21.JPG","22.JPG","23.JPG","24.JPG","25.JPG","26.JPG","27.JPG",
@@ -80,16 +83,23 @@
         const gridContainer = document.getElementById('grid');
         const dayWrapper = document.getElementById('photo-day-wrapper');
 
-        const dayPath = `static/photos/day.jpg`;
+        const dayPath = `static/photos/day.JPG`; 
         const dayImg = new Image();
+        
         dayImg.onload = function() {
             dayWrapper.style.display = 'block';
             dayContainer.innerHTML = `
                 <div class="photo-day-card">
                     <a class="zoom" href="${dayPath}"><img src="${dayPath}" class="gallery-item"></a>
-                    <br><a href="${dayPath}" download class="download-btn">📥 СКАЧАТЬ ФОТО ДНЯ</a>
+                    <br><a href="${dayPath}" download="day.JPG" class="download-btn">📥 СКАЧАТЬ ФОТО ДНЯ</a>
                 </div>
             `;
+          
+            new LuminousGallery(document.querySelectorAll(".zoom"));
+        };
+        
+        dayImg.onerror = function() {
+            console.error("Не удалось найти фото дня по пути: " + dayPath);
         };
         dayImg.src = dayPath;
 
@@ -97,7 +107,10 @@
             const path = `static/photos/${file}`;
             gridContainer.innerHTML += `
                 <div class="photo-card">
-                    <section class="zoom" href="${path}"><img src="${path}" class="gallery-item"></section>
+                    <a class="zoom" href="${path}">
+                        <img src="${path}" class="gallery-item">
+                    </a>
+                    <a href="${path}" download="${file}" class="download-btn">📥 СКАЧАТЬ</a>
                 </div>
             `;
         });
